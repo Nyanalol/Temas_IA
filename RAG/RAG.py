@@ -31,10 +31,6 @@ pdf_chunks = load_chunks_pdf()
 
 chunks = txt_chunks + pdf_chunks
 
-print(f"Chunks TXT: {len(txt_chunks)}")
-print(f"Chunks PDF: {len(pdf_chunks)}")
-print(f"Chunks totales: {len(chunks)}")
-
 if override:
     chunks = override_metadata(chunks, source, developer)
 
