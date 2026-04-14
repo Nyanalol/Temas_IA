@@ -1,0 +1,25 @@
+El concepto de ingeniería de datos ha evolucionado significativamente en los últimos años. Tradicionalmente, los sistemas de datos se centraban en procesos batch que se ejecutaban una vez al día. Sin embargo, con la aparición de arquitecturas modernas, como el procesamiento en tiempo real, las organizaciones han comenzado a demandar soluciones más rápidas y eficientes.
+
+En una arquitectura típica de datos, se pueden identificar varias capas. La capa de ingesta es responsable de capturar datos desde diferentes fuentes, como APIs, bases de datos o sistemas de mensajería. Posteriormente, estos datos pasan a una capa de procesamiento donde se transforman, limpian y enriquecen.
+
+Por ejemplo, un pipeline moderno podría involucrar el uso de Kafka para la ingesta de eventos, seguido de procesamiento con PySpark, y almacenamiento en un data warehouse como BigQuery o Snowflake. Finalmente, estos datos son consumidos por herramientas de visualización como Power BI o Looker.
+
+A nivel organizativo, los equipos de datos suelen dividirse en varios roles. El Data Engineer se encarga de construir y mantener los pipelines de datos. El Data Analyst trabaja con los datos para generar insights, mientras que el Data Scientist desarrolla modelos predictivos.
+
+Además de los aspectos técnicos, la gobernanza del dato es un componente clave. Esto incluye la gestión de accesos, la calidad de los datos y la trazabilidad. Herramientas como Apache Atlas o soluciones integradas en plataformas cloud ayudan a implementar estas prácticas.
+
+Ejemplo de registro de log:
+timestamp=2026-04-09T10:15:23Z level=INFO service=payment-api message="Transaction processed successfully" user_id=12345 amount=49.99 currency=EUR
+
+Ejemplo de configuración en JSON:
+{
+"pipeline_name": "daily_sales_ingestion",
+"source": "api_sales",
+"destination": "bigquery.sales_table",
+"schedule": "0 2 * * *",
+"enabled": true
+}
+
+En cuanto a buenas prácticas, es recomendable implementar cargas incrementales en lugar de cargas completas siempre que sea posible. Esto reduce el consumo de recursos y mejora el rendimiento general del sistema.
+
+Finalmente, la monitorización es esencial para garantizar el correcto funcionamiento de los pipelines. Métricas como el tiempo de ejecución, número de registros procesados y errores deben ser supervisadas continuamente.

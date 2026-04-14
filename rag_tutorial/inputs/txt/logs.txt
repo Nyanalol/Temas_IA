@@ -1,0 +1,35 @@
+La gestión de datos en entornos modernos requiere una combinación de herramientas que permitan tanto el procesamiento batch como el procesamiento en tiempo real. En muchas organizaciones, los datos provienen de múltiples fuentes heterogéneas, como sistemas transaccionales, APIs externas y eventos generados por usuarios.
+
+Un patrón común en arquitectura de datos es el uso de la arquitectura medallón, que divide el procesamiento en tres capas principales: bronze, silver y gold. La capa bronze almacena datos en bruto tal como llegan desde la fuente. La capa silver se encarga de limpiar y estructurar los datos, mientras que la capa gold contiene datos listos para consumo analítico.
+
+Ejemplo de evento en streaming:
+timestamp=2026-04-09T11:45:10Z level=INFO service=order-service message="Order created" order_id=78910 user_id=456 amount=120.50 currency=EUR
+
+Ejemplo de error:
+timestamp=2026-04-09T11:46:02Z level=ERROR service=order-service message="Payment failed" order_id=78910 error_code=PAYMENT_DECLINED retry=true
+
+En escenarios de tiempo real, tecnologías como Kafka o Kinesis permiten capturar eventos y procesarlos casi en el momento en que ocurren. Estos eventos pueden ser consumidos por motores de procesamiento como Spark Structured Streaming o Flink.
+
+Ejemplo de consulta SQL:
+SELECT
+user_id,
+COUNT(*) AS total_orders,
+SUM(amount) AS total_spent
+FROM orders
+WHERE order_date >= '2026-01-01'
+GROUP BY user_id
+HAVING total_spent > 1000;
+
+También es importante considerar la idempotencia en los pipelines de datos. Esto significa que ejecutar el mismo proceso varias veces no debe generar resultados duplicados ni inconsistentes. Para ello, se suelen usar claves únicas o técnicas de deduplicación.
+
+Configuración de pipeline en YAML:
+pipeline:
+name: realtime_orders_processing
+source: kafka_topic_orders
+destination: bigquery.orders_clean
+mode: streaming
+checkpoint: enabled
+
+Desde el punto de vista de monitorización, es clave registrar métricas como latencia de procesamiento, throughput y número de errores. Estas métricas permiten detectar cuellos de botella y garantizar la calidad del servicio.
+
+Finalmente, la seguridad y el control de acceso son aspectos fundamentales. Es necesario definir quién puede acceder a qué datos y en qué condiciones, especialmente cuando se trabaja con datos sensibles o regulados.
