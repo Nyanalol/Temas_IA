@@ -56,7 +56,7 @@ def get_llm():
                 "Ejecuta: uv add langchain-anthropic"
             )
         return ChatAnthropic(
-            model=LLM_MODEL,
+            model=LLM_MODEL,  # type: ignore[call-arg]
             temperature=LLM_TEMPERATURE,
             api_key=os.getenv("ANTHROPIC_API_KEY"),  # type: ignore[arg-type]
         )
