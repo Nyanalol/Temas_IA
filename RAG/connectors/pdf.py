@@ -1,42 +1,45 @@
+"""
+connectors/pdf.py — Carga ficheros .pdf y los parte en chunks.
+"""
+
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pathlib import Path
 
 
-
 def load_chunks_pdf():
-    BASE_DIR = Path(__file__).resolve().parent.parent
+    """
+    Lee todos los .pdf de inputs/pdf/, los convierte en Documents
+    (una página = un Document) y los parte en chunks con solapamiento.
+    """
+    BASE_DIR  = Path(__file__).resolve().parent.parent
     data_path = BASE_DIR / "inputs" / "pdf"
 
     docs = []
 
-    print("\n[PDF] Buscando archivos PDF...\n")
+    print("\n[pdf] Buscando archivos PDF...")
 
     for file in data_path.glob("*.pdf"):
-        print(f"Leyendo: {file.name}")
+        print(f"[pdf] Leyendo: {file.name}")
 
-        loader = PyPDFLoader(str(file))
+        loader   = PyPDFLoader(str(file))
         pdf_docs = loader.load()
+
+        # Añadimos metadatos a las páginas de este fichero antes de agregarlo.
+        for doc in pdf_docs:
+            doc.metadata["type"]      = "pdf"
+            doc.metadata["file_name"] = file.name
 
         docs.extend(pdf_docs)
 
-    for doc in pdf_docs:
-        doc.metadata["type"] = "pdf"
-        doc.metadata["file_name"] = file.name
+    print(f"[pdf] Total páginas cargadas: {len(docs)}")
 
-    print(f"\n✔ Total páginas cargadas: {len(docs)}")
-
-    # =========================
-    # CHUNKING
-    # =========================
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
-        chunk_overlap=50
+        chunk_overlap=50,
     )
 
     chunks = splitter.split_documents(docs)
-
-    print(f"✔ Total chunks generados: {len(chunks)}\n")
-
+    print(f"[pdf] Chunks generados: {len(chunks)}")
 
     return chunks

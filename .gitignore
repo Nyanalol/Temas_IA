@@ -1,0 +1,25 @@
+# Secretos
+.env
+
+# Entornos virtuales
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Base de datos vectorial — se regenera al ejecutar rag.py
+rag/chroma_db/
+
+# uv
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+
+# Modelos descargados localmente (pueden pesar varios GB)
+*.bin
+*.safetensors

@@ -1,0 +1,40 @@
+[project]
+name = "temas-ia"
+version = "0.1.0"
+description = "Proyecto de aprendizaje de IA — Embeddings, RAG y Agentes"
+requires-python = ">=3.11"
+dependencies = [
+    # ── LangChain core ────────────────────────────────────────────────────────
+    "langchain>=1.2.15",
+    "langchain-community>=0.4.1",
+    "langchain-core>=1.2.26",
+
+    # ── Proveedores LLM ───────────────────────────────────────────────────────
+    "langchain-ollama>=1.1.0",        # local, gratis
+    "langchain-openai>=1.1.12",       # OpenAI / compatible (Azure, etc.)
+    "langchain-anthropic>=0.3.0",     # Claude
+    "langchain-groq>=0.2.0",          # Groq (Llama, Mixtral, etc.)
+
+    # ── Vectorstore ───────────────────────────────────────────────────────────
+    "langchain-chroma>=1.1.0",
+    "chromadb>=1.5.7",
+
+    # ── Text splitting ────────────────────────────────────────────────────────
+    "langchain-text-splitters>=0.3.0",
+
+    # ── Loaders ───────────────────────────────────────────────────────────────
+    "pypdf>=6.10.0",         # PDF
+    "docx2txt>=0.9",         # DOCX (Word)
+    # JSON y CSV no necesitan deps extra: vienen con langchain-community.
+    # Markdown tampoco: MarkdownHeaderTextSplitter es parte de langchain-text-splitters.
+
+    # ── Config ────────────────────────────────────────────────────────────────
+    "python-dotenv>=1.0.0",
+
+    # ── Embeddings locales (embeddings/) ─────────────────────────────────────
+    # Solo necesarios para los experimentos de embeddings.py.
+    # Modelos como DeBERTa y sentence-transformers se ejecutan 100% en local.
+    "sentence-transformers>=3.0.0",
+    "transformers>=4.40.0",
+    "torch>=2.0.0",
+]
