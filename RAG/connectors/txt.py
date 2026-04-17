@@ -3,19 +3,13 @@ connectors/txt.py — Carga ficheros .txt y los parte en chunks.
 """
 
 from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
+from ._base import inputs_dir, get_splitter
 
 
-def load_chunks():
-    """
-    Lee todos los .txt de inputs/txt/, los convierte en Documents
-    y los parte en chunks con solapamiento.
-    """
-    BASE_DIR  = Path(__file__).resolve().parent.parent
-    data_path = BASE_DIR / "inputs" / "txt"
-
-    docs = []
+def load() -> list:
+    """Lee todos los .txt de inputs/txt/ y los parte en chunks."""
+    data_path = inputs_dir("txt")
+    docs      = []
 
     print("\n[txt] Buscando archivos .txt...")
     for file in data_path.glob("*.txt"):
@@ -26,24 +20,11 @@ def load_chunks():
         docs.append(
             Document(
                 page_content=text,
-                metadata={
-                    "source": file.name,
-                    "path": str(file),
-                    "type": "txt",
-                },
+                metadata={"source": file.name, "path": str(file), "type": "txt"},
             )
         )
 
     print(f"[txt] Documentos cargados: {len(docs)}")
-
-    # chunk_size=500  → máximo de caracteres por chunk
-    # chunk_overlap=50 → los chunks se solapan 50 caracteres para no perder contexto en los cortes
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
-    )
-
-    chunks = splitter.split_documents(docs)
+    chunks = get_splitter().split_documents(docs)
     print(f"[txt] Chunks generados: {len(chunks)}")
-
     return chunks

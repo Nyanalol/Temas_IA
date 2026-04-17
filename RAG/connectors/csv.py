@@ -1,41 +1,25 @@
 """
 connectors/csv.py — Carga ficheros .csv y los parte en chunks.
 
-Usa CSVLoader de langchain_community, que trata cada fila como un Document
-independiente. Después se aplica el mismo splitter que en el resto de conectores
-por si alguna celda es muy larga.
+CSVLoader trata cada fila como un Document independiente.
+El contenido de cada Document es "columna: valor" por línea.
 """
 
 from langchain_community.document_loaders import CSVLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
+from ._base import inputs_dir, get_splitter
 
 
-def load_chunks_csv():
-    """
-    Lee todos los .csv de inputs/csv/ y los parte en chunks.
-
-    Cada fila del CSV se convierte en un Document cuyo contenido es
-    "columna: valor, columna: valor, ..." (formato que CSVLoader produce).
-    """
-    BASE_DIR  = Path(__file__).resolve().parent.parent
-    data_path = BASE_DIR / "inputs" / "csv"
-
-    docs = []
+def load() -> list:
+    """Lee todos los .csv de inputs/csv/ y los parte en chunks."""
+    data_path = inputs_dir("csv")
+    docs      = []
 
     print("\n[csv] Buscando archivos CSV...")
     for file in data_path.glob("*.csv"):
         print(f"[csv] Leyendo: {file.name}")
 
-        # source_column indica qué columna usar como metadato "source".
-        # Si no existe esa columna en tu CSV, elimina el argumento.
-        loader = CSVLoader(
-            file_path=str(file),
-            metadata_columns=["source"] if False else [],  # ajusta si quieres
-        )
-        file_docs = loader.load()
+        file_docs = CSVLoader(file_path=str(file)).load()
 
-        # Añadimos metadatos comunes
         for doc in file_docs:
             doc.metadata["type"]      = "csv"
             doc.metadata["file_name"] = file.name
@@ -43,9 +27,6 @@ def load_chunks_csv():
         docs.extend(file_docs)
 
     print(f"[csv] Documentos cargados: {len(docs)}")
-
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    chunks   = splitter.split_documents(docs)
+    chunks = get_splitter().split_documents(docs)
     print(f"[csv] Chunks generados: {len(chunks)}")
-
     return chunks

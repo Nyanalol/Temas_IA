@@ -1,28 +1,22 @@
 """
 connectors/json.py — Carga ficheros .json y los parte en chunks.
 
-Soporta dos formatos habituales:
-  - Array de objetos: [{...}, {...}, ...]
-  - Objeto único:     {"clave": "valor", ...}
+Soporta dos formatos:
+  - Array de objetos : [{...}, {...}, ...]
+  - Objeto único     : {"clave": "valor", ...}
 
-Cada elemento del array (o el objeto entero) se convierte en un Document.
-No requiere dependencias extra: usa el módulo json estándar de Python.
+No requiere dependencias extra: usa el módulo json de la stdlib.
 """
 
 import json
 from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from pathlib import Path
+from ._base import inputs_dir, get_splitter
 
 
-def load_chunks_json():
-    """
-    Lee todos los .json de inputs/json/ y los parte en chunks.
-    """
-    BASE_DIR  = Path(__file__).resolve().parent.parent
-    data_path = BASE_DIR / "inputs" / "json"
-
-    docs = []
+def load() -> list:
+    """Lee todos los .json de inputs/json/ y los parte en chunks."""
+    data_path = inputs_dir("json")
+    docs      = []
 
     print("\n[json] Buscando archivos JSON...")
     for file in data_path.glob("*.json"):
@@ -35,25 +29,19 @@ def load_chunks_json():
         items = data if isinstance(data, list) else [data]
 
         for i, item in enumerate(items):
-            # Convertimos el objeto a texto plano key: value\n ...
-            content = "\n".join(f"{k}: {v}" for k, v in item.items()) if isinstance(item, dict) else str(item)
-
+            content = (
+                "\n".join(f"{k}: {v}" for k, v in item.items())
+                if isinstance(item, dict)
+                else str(item)
+            )
             docs.append(
                 Document(
                     page_content=content,
-                    metadata={
-                        "source":    file.name,
-                        "file_name": file.name,
-                        "type":      "json",
-                        "index":     i,
-                    },
+                    metadata={"source": file.name, "file_name": file.name, "type": "json", "index": i},
                 )
             )
 
     print(f"[json] Documentos cargados: {len(docs)}")
-
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    chunks   = splitter.split_documents(docs)
+    chunks = get_splitter().split_documents(docs)
     print(f"[json] Chunks generados: {len(chunks)}")
-
     return chunks
