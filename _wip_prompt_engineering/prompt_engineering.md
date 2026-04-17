@@ -2,6 +2,12 @@
 
 El prompt engineering es el arte de hablarle bien a un LLM para obtener las respuestas que necesitas. Antes de añadir agentes o herramientas complejas, es fundamental dominar esto: un buen prompt vale más que un modelo más grande.
 
+> **Cubierto en el curso de LangChain:**
+> - `1:38:24` Prompts Templates Functions
+> - `1:54:59` Pydantic & TypedDict for Structured Output
+>
+> Los scripts de esta carpeta complementan esas secciones con experimentos propios.
+
 ---
 
 ## Qué aprenderás aquí
@@ -26,10 +32,24 @@ template = ChatPromptTemplate.from_messages([
 prompt = template.invoke({"dominio": "Python", "pregunta": "¿Qué es un decorator?"})
 ```
 
-### 4. ReAct (Reason + Act)
-Patrón donde el LLM razona, decide actuar (llamar a una herramienta), observa el resultado, y vuelve a razonar. Es la base de los agentes modernos.
+### 4. Structured Output — Pydantic y TypedDict
+¿Cómo hacer que el LLM devuelva JSON con una estructura fija?
+```python
+from pydantic import BaseModel
 
-### 5. Prompt para RAG
+class Resumen(BaseModel):
+    titulo: str
+    puntos_clave: list[str]
+
+llm_structured = llm.with_structured_output(Resumen)
+resultado = llm_structured.invoke("Resume este texto...")
+print(resultado.titulo)
+```
+
+### 5. ReAct (Reason + Act)
+Patrón donde el LLM razona, decide actuar (llamar a una herramienta), observa el resultado, y vuelve a razonar. Es la base de los agentes modernos. Ver `_wip_tools/`.
+
+### 6. Prompt para RAG
 Cómo estructurar el prompt del pipeline RAG para que el modelo solo use el contexto recuperado y no invente información (reducir alucinaciones).
 
 ---
@@ -39,6 +59,7 @@ Cómo estructurar el prompt del pipeline RAG para que el modelo solo use el cont
 - `zero_shot_vs_few_shot.py` — comparar respuestas con y sin ejemplos
 - `chain_of_thought.py` — tareas matemáticas o de razonamiento
 - `prompt_templates.py` — uso de ChatPromptTemplate con variables
+- `structured_output.py` — Pydantic y TypedDict para output estructurado
 - `rag_prompt.py` — refinar el prompt del pipeline RAG
 
 ---

@@ -2,6 +2,13 @@
 
 Por defecto un LLM no recuerda nada entre llamadas: cada `invoke()` es independiente. La **memoria** resuelve esto manteniendo el historial de la conversación y pasándolo en cada turno.
 
+> **Cubierto en el curso de LangGraph:**
+> - `5:44:55` Manage Memory in LangGraph
+> - `5:58:34` Human in the Loop Architecture (relacionado)
+>
+> Los scripts de esta carpeta exploran la memoria antes de llegar a LangGraph,
+> partiendo de lo manual hacia lo automático.
+
 ---
 
 ## Qué aprenderás aquí
@@ -33,8 +40,8 @@ En lugar de guardar todos los mensajes, resume la conversación pasada. Útil pa
 ### 5. Memoria persistente
 Guardar el historial en disco (JSON, SQLite) para que sobreviva entre sesiones.
 
-### 6. LangGraph y memoria de agentes
-LangGraph es el framework moderno de LangChain para agentes con memoria de estado. Es más potente que el `AgentExecutor` clásico.
+### 6. Memoria en LangGraph
+LangGraph tiene su propio sistema de memoria integrado en el estado del grafo. Es más potente y flexible que los anteriores. Ver `_wip_langgraph/` timestamp `5:44:55`.
 
 ---
 
@@ -50,4 +57,4 @@ LangGraph es el framework moderno de LangChain para agentes con memoria de estad
 
 ## Recursos
 - [LangChain Memory](https://python.langchain.com/docs/concepts/memory/)
-- [LangGraph](https://langchain-ai.github.io/langgraph/)
+- [LangGraph Memory](https://langchain-ai.github.io/langgraph/concepts/memory/)

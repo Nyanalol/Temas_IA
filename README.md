@@ -2,7 +2,41 @@
 
 Proyecto personal de aprendizaje de Inteligencia Artificial con Python y LangChain.
 
-Parte de cero —qué es un embedding, qué es un token— y avanza hacia pipelines RAG completos y agentes con tipos de mensaje. Usa **Ollama** para ejecutar LLMs en local de forma gratuita, con soporte para OpenAI, Anthropic y Groq cuando se quieran probar modelos externos.
+Parte de cero —qué es un embedding, qué es un token— y avanza hacia pipelines RAG completos, agentes con LangChain y flujos complejos con LangGraph. Usa **Ollama** para ejecutar LLMs en local de forma gratuita, con soporte para OpenAI, Anthropic y Groq cuando se quieran probar modelos externos.
+
+---
+
+## Hoja de ruta de aprendizaje
+
+```
+[✓] embeddings/     Tokenización y vectores de frase (HuggingFace)
+[✓] rag/            RAG básico: cargar documentos, indexar, responder
+[→] agents/         Curso LangChain: mensajes, chains, ReAct, agentes
+[ ] _wip_rag_advanced/   RAG avanzado: multi-query, re-ranking, hybrid search...
+[ ] _wip_langgraph/      Curso LangGraph: grafos de estado, workflows, memoria
+[ ] _wip_prompt_engineering/
+[ ] _wip_tools/
+[ ] _wip_memory/
+[ ] _wip_evaluation/
+[ ] _wip_fine_tuning/
+```
+
+### Cursos en progreso
+
+**LangChain** — orden del temario:
+| Timestamp | Tema | Estado |
+|---|---|---|
+| 1:17:18 | Messages in LangChain | `agents/basics.py` ✓ |
+| 1:38:24 | Prompts Templates Functions | pendiente |
+| 1:54:59 | Pydantic & TypedDict for Structured Output | pendiente |
+| 2:26:55 | Chains (sequential) | pendiente |
+| 3:02:25 | Parallel Chains | pendiente |
+| 3:34:05 | Conditional Chains | pendiente |
+| 3:55:21 | ReAct Agent Framework | pendiente |
+| 4:12:26 | ReAct Agent with Streams | pendiente |
+| 4:42:12 | SQL ReAct Agent | pendiente |
+
+**LangGraph** — siguiente después de LangChain. Ver [`_wip_langgraph/langgraph.md`](_wip_langgraph/langgraph.md).
 
 ---
 
@@ -18,37 +52,29 @@ Temas_IA/
 ├── config.py             # Fábrica central de LLM y embeddings (lee .env)
 │                         # Cambiar de proveedor = editar .env, sin tocar código
 │
-├── embeddings/
-│   └── embeddings.py     # Experimento 1: tokenización y vectores de frase
-│                         # Modelos: DeBERTa (embedding por token)
-│                         #          all-mpnet-base-v2 (embedding de frase)
+├── embeddings/           # ✓ HECHO — Experimentos con embeddings
+│   └── embeddings.py     # DeBERTa (embedding por token) + all-mpnet (embedding de frase)
 │
-├── rag/
-│   ├── pipeline.py       # Script principal: carga documentos → indexa → responde
+├── rag/                  # ✓ HECHO — Pipeline RAG básico
+│   ├── pipeline.py       # Script principal: carga docs → indexa → responde
 │   ├── local_persist.py  # Gestión del vectorstore ChromaDB en disco
 │   ├── override_metadata.py
-│   │
-│   ├── connectors/       # Loaders de documentos, uno por formato
-│   │   ├── _base.py      # Configuración compartida (splitter, rutas de input)
-│   │   ├── __init__.py   # Expone load_all() — agrega todos los conectores
-│   │   ├── txt.py
-│   │   ├── pdf.py
-│   │   ├── csv.py
-│   │   ├── json.py
-│   │   ├── markdown.py
-│   │   └── docx.py
-│   │
-│   └── inputs/           # Pon aquí los documentos que quieres indexar
-│       ├── txt/
-│       ├── pdf/
-│       ├── csv/
-│       ├── json/
-│       ├── markdown/
-│       └── docx/
+│   ├── connectors/       # Un conector por formato: txt, pdf, csv, json, markdown, docx
+│   │   ├── _base.py      # Configuración compartida (splitter, rutas)
+│   │   └── __init__.py   # Expone load_all()
+│   └── inputs/           # Pon aquí los documentos a indexar
 │
-└── agents/
-    └── basics.py         # Experimento 2: tipos de mensaje con LangChain
-                          # SystemMessage, HumanMessage, AIMessage
+├── agents/               # → EN PROGRESO — Curso LangChain
+│   └── basics.py         # Tipos de mensaje: SystemMessage, HumanMessage, AIMessage
+│                         # (Aquí irán los scripts del curso según avances)
+│
+│── _wip_rag_advanced/    # RAG avanzado: multi-query, re-ranking, hybrid search...
+├── _wip_langgraph/       # Siguiente curso: grafos de estado, workflows, memoria
+├── _wip_prompt_engineering/
+├── _wip_tools/
+├── _wip_memory/
+├── _wip_evaluation/
+└── _wip_fine_tuning/
 ```
 
 ---
