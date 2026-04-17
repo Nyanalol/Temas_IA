@@ -44,7 +44,7 @@ def get_llm():
         return ChatOpenAI(
             model=LLM_MODEL,
             temperature=LLM_TEMPERATURE,
-            api_key=os.getenv("OPENAI_API_KEY"),
+            api_key=os.getenv("OPENAI_API_KEY"),  # type: ignore[arg-type]
         )
 
     if LLM_PROVIDER == "anthropic":
@@ -58,7 +58,7 @@ def get_llm():
         return ChatAnthropic(
             model=LLM_MODEL,
             temperature=LLM_TEMPERATURE,
-            api_key=os.getenv("ANTHROPIC_API_KEY"),
+            api_key=os.getenv("ANTHROPIC_API_KEY"),  # type: ignore[arg-type]
         )
 
     if LLM_PROVIDER == "groq":
@@ -72,7 +72,7 @@ def get_llm():
         return ChatGroq(
             model=LLM_MODEL,
             temperature=LLM_TEMPERATURE,
-            api_key=os.getenv("GROQ_API_KEY"),
+            api_key=os.getenv("GROQ_API_KEY"),  # type: ignore[arg-type]
         )
 
     raise ValueError(
@@ -94,7 +94,7 @@ def get_embeddings():
         from langchain_openai import OpenAIEmbeddings
         return OpenAIEmbeddings(
             model=EMBEDDING_MODEL,
-            api_key=os.getenv("OPENAI_API_KEY"),
+            api_key=os.getenv("OPENAI_API_KEY"),  # type: ignore[arg-type]
         )
 
     raise ValueError(
