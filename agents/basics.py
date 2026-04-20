@@ -1,45 +1,50 @@
 """
-basics.py — Introducción a los tipos de mensaje y agentes con LangChain.
-
-En LangChain los mensajes tienen roles:
-  SystemMessage  → instrucciones globales al modelo (personalidad, restricciones…)
-  HumanMessage   → lo que dice el usuario
-  AIMessage      → la respuesta del modelo (útil para mantener historial)
-
-El LLM se obtiene de config.py para no repetir la inicialización aquí.
-
-Ejecución (desde la raíz del proyecto):
-    python agents/basics.py
+Entry point for the incident analysis chain.
 """
 
 import sys
 from pathlib import Path
 
-# Añadimos la raíz al path para poder importar config.py.
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from config import get_llm
-from langchain_core.messages import SystemMessage, HumanMessage
+from agents.chain_factory import build_incident_chain
+from agents.runnables import print_title
 
 
-# ── Configuración ──────────────────────────────────────────────────────────────
-
-llm = get_llm()
-
-QUERY = "Dame el ejemplo de registro de log en mis documentos"
 
 
-# ── Ejemplo básico de mensajes ─────────────────────────────────────────────────
+USER_MESSAGE = (
+    "The daily sales pipeline failed at 06:10. "
+    "The silver job for customer_orders crashed because the source file "
+    "arrived without customer_id. "
+    "This is high priority because the finance dashboard was not refreshed."
+)
 
-messages = [
-    SystemMessage(content="Eres un asistente técnico experto en desarrollo de software."),
-    HumanMessage(content=QUERY),
-]
 
-print(f"\n[agents] Enviando query: {QUERY}")
+def main():
+    chain, extraction_parser = build_incident_chain()
 
-response = llm.invoke(messages)
+    inputs = {
+        "user_message": USER_MESSAGE,
+        "format_instructions": extraction_parser.get_format_instructions(),
+    }
 
-print("\n[agents] Respuesta:")
-print(response.content)
+    print_title("INPUT_ORIGINAL")
+    print(USER_MESSAGE)
+
+
+    result = chain.invoke(inputs)
+
+    print_title("FINAL_RESULT")
+    print(result)
+
+    print_title("FINAL_FIELDS")
+    print("incident_summary:", result.incident_summary)
+    print("business_impact:", result.business_impact)
+    print("next_action:", result.next_action)
+    print("owner_team:", result.owner_team)
+
+
+if __name__ == "__main__":
+    main()
