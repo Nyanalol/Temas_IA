@@ -8,28 +8,20 @@ Flujo:
   4. Construir un prompt con ese contexto y preguntar al LLM
 
 Ejecución (desde la raíz del proyecto):
-    python rag/pipeline.py
+    python -m rag.pipeline
 """
 
-import sys
 from pathlib import Path
 
-# Añadimos la raíz y el directorio rag/ al path para poder hacer
-# los imports relativos correctamente cuando se ejecuta como script.
-ROOT = Path(__file__).resolve().parents[1]
-HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(HERE))
-
 from config import get_llm, get_embeddings
-from connectors import load_all
-from override_metadata import override_metadata
-from local_persist import persist_vectorstore
+from rag.connectors import load_all
+from rag.override_metadata import override_metadata
+from rag.local_persist import persist_vectorstore
 
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 
-PERSIST_PATH = HERE / "chroma_db"
+PERSIST_PATH = Path(__file__).resolve().parent / "chroma_db"
 
 # Si OVERRIDE=True, sobreescribe los metadatos de todos los documentos
 # con SOURCE y DEVELOPER. Útil para etiquetar cargas de prueba.

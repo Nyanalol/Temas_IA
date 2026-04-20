@@ -33,6 +33,7 @@ def _ensure_ollama_running(timeout: int = 10) -> None:
 
     raise RuntimeError(f"Ollama no arrancó en {timeout}s. Comprueba la instalación.")
 
+
 logging.basicConfig(
     level=logging.WARNING,
     format="%(name)s | %(levelname)s | %(message)s",
