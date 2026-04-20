@@ -1,40 +1,34 @@
 import json
+import logging
 import re
 from langchain_core.runnables import RunnableLambda
-from pydantic_test import IncidentExtraction
+from .models import IncidentExtraction
 
-
-def print_title(title: str) -> None:
-    print("\n" + "=" * 80)
-    print(title)
-    print("=" * 80)
+logger = logging.getLogger(__name__)
 
 
 def debug_step(name: str) -> RunnableLambda:
     def _debug(x):
-        print_title(f"STEP {name}")
-        print(x)
+        logger.debug("=" * 80)
+        logger.debug("STEP %s", name)
+        logger.debug("%s", x)
         return x
 
     return RunnableLambda(_debug)
 
 
 def extract_json_text(model_output):
-    print_title("STEP RAW_LLM_OUTPUT")
-
     if hasattr(model_output, "content"):
         text = model_output.content
     else:
         text = str(model_output)
 
-    print(text)
     text = text.strip()
-
-    print_title("STEP JSON_CLEANER")
+    logger.debug("RAW_LLM_OUTPUT: %s", text)
 
     try:
         json.loads(text)
-        print("Valid JSON detected directly")
+        logger.debug("Valid JSON detected directly")
         return text
     except Exception:
         pass
@@ -43,8 +37,7 @@ def extract_json_text(model_output):
     if match:
         candidate = match.group(0)
         json.loads(candidate)
-        print("Valid JSON extracted with regex")
-        print(candidate)
+        logger.debug("Valid JSON extracted with regex: %s", candidate)
         return candidate
 
     raise ValueError(f"No valid JSON found in model output:\n{text}")
@@ -54,8 +47,7 @@ def build_second_stage_input(
     extracted: IncidentExtraction,
     response_format_instructions: str,
 ):
-    print_title("STEP CUSTOM_RUNNABLE_INPUT")
-    print(extracted)
+    logger.debug("CUSTOM_RUNNABLE_INPUT: %s", extracted)
 
     incident_context = (
         f"Pipeline name: {extracted.pipeline_name}\n"
@@ -71,9 +63,7 @@ def build_second_stage_input(
         "format_instructions": response_format_instructions,
     }
 
-    print_title("STEP CUSTOM_RUNNABLE_OUTPUT")
-    print(output)
-
+    logger.debug("CUSTOM_RUNNABLE_OUTPUT: %s", output)
     return output
 
 

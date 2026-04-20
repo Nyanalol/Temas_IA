@@ -1,17 +1,17 @@
 from config import get_llm
-from agents.prompts import get_extract_prompt, get_response_prompt
-from agents.parsers import get_extraction_parser, get_response_parser
-from agents.runnables import debug_step, get_json_cleaner, get_custom_runnable
+from .prompts import get_extract_prompt, get_response_prompt
+from .parsers import get_extraction_parser, get_response_parser
+from .runnables import debug_step, get_json_cleaner, get_custom_runnable
 
 
 def build_incident_chain():
     llm = get_llm()
 
-    extract_prompt = get_extract_prompt()
-    response_prompt = get_response_prompt()
-
     extraction_parser = get_extraction_parser()
     response_parser = get_response_parser()
+
+    extract_prompt = get_extract_prompt(extraction_parser.get_format_instructions())
+    response_prompt = get_response_prompt()
 
     json_cleaner = get_json_cleaner()
     custom_runnable = get_custom_runnable(
@@ -38,4 +38,4 @@ def build_incident_chain():
         | debug_step("FINAL_PYDANTIC_OUTPUT")
     )
 
-    return chain, extraction_parser
+    return chain

@@ -33,3 +33,7 @@ dependencies = [
     "torch>=2.0.0",
     "pydantic>=2.13.1",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agents*", "rag*", "embeddings*"]

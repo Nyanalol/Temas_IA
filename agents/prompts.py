@@ -1,7 +1,7 @@
 from langchain_core.prompts import ChatPromptTemplate
 
 
-def get_extract_prompt() -> ChatPromptTemplate:
+def get_extract_prompt(format_instructions: str) -> ChatPromptTemplate:
     return ChatPromptTemplate.from_messages(
         [
             (
@@ -25,7 +25,7 @@ def get_extract_prompt() -> ChatPromptTemplate:
                 ),
             ),
         ]
-    )
+    ).partial(format_instructions=format_instructions)
 
 
 def get_response_prompt() -> ChatPromptTemplate:
