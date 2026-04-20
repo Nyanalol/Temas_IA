@@ -62,7 +62,7 @@ def _show_event_summary(extracted) -> None:
     if extracted.notes:
         print(f"  Notas        : {extracted.notes}")
     if extracted.all_day:
-        print(f"  Todo el día  : Sí")
+        print("  Todo el día  : Sí")
     if extracted.repeat_freq:
         print(f"  Repetición   : {extracted.repeat_freq} (cada {extracted.repeat_interval})")
         if extracted.repeat_byday:
@@ -128,7 +128,7 @@ def main() -> None:
         try:
             event_dict = build_event_dict(extracted)
             url = create_event(event_dict)
-            print(f"\nEvento creado correctamente.")
+            print("\nEvento creado correctamente.")
             print(f"URL: {url}")
         except Exception as exc:
             print(f"\n[Error al crear el evento en iCloud] {exc}")

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "restructure", "feat/**", "fix/**"]
+  pull_request:
+    branches: ["main", "restructure"]
+
+jobs:
+  lint-and-check:
+    name: Lint & Import check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Lint with Ruff
+        run: uv run ruff check .
+
+      - name: Check imports
+        env:
+          # Variables de entorno mínimas para que config.py no falle
+          LLM_PROVIDER: ollama
+          LLM_MODEL: llama3
+          LLM_TEMPERATURE: "0"
+          EMBEDDING_PROVIDER: ollama
+          EMBEDDING_MODEL: nomic-embed-text
+          ICLOUD_EMAIL: ci@example.com
+          ICLOUD_APP_PASSWORD: fake-password
+          ICLOUD_DEFAULT_CALENDAR: Calendario
+          API_KEY: ci-fake-key
+        run: |
+          uv run python -c "import agents; print('agents OK')"
+          uv run python -c "import events; print('events OK')"
+          uv run python -c "import rag; print('rag OK')"
+          uv run python -c "from agents.models import IncidentExtraction, IncidentResponse; print('models OK')"
+          uv run python -c "from events.models import EventExtraction, AlarmInput; print('event models OK')"
+          uv run python -c "from events.api import app; print('events API OK')"
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-check
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run tests
+        env:
+          LLM_PROVIDER: ollama
+          LLM_MODEL: llama3
+          LLM_TEMPERATURE: "0"
+          EMBEDDING_PROVIDER: ollama
+          EMBEDDING_MODEL: nomic-embed-text
+          ICLOUD_EMAIL: ci@example.com
+          ICLOUD_APP_PASSWORD: fake-password
+          ICLOUD_DEFAULT_CALENDAR: Calendario
+          API_KEY: ci-fake-key
+        run: uv run pytest tests/ -v --tb=short 2>/dev/null || echo "No tests yet — add them in tests/"

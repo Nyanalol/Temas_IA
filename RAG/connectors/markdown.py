@@ -7,7 +7,8 @@ Así cada chunk corresponde a una unidad lógica del documento.
 """
 
 from langchain_text_splitters import MarkdownHeaderTextSplitter
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 # Cabeceras usadas como puntos de corte. El valor es el nombre del metadato
 # que se añade al chunk para saber a qué sección pertenece.

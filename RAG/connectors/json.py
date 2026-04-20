@@ -9,8 +9,10 @@ No requiere dependencias extra: usa el módulo json de la stdlib.
 """
 
 import json
+
 from langchain_core.documents import Document
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 
 def load() -> list:

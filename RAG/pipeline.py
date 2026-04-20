@@ -13,11 +13,10 @@ Ejecución (desde la raíz del proyecto):
 
 from pathlib import Path
 
-from config import get_llm, get_embeddings
+from config import get_embeddings, get_llm
 from rag.connectors import load_all
-from rag.override_metadata import override_metadata
 from rag.local_persist import persist_vectorstore
-
+from rag.override_metadata import override_metadata
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 

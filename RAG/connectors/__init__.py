@@ -9,12 +9,12 @@ Para añadir un nuevo formato:
   2. Añade la importación y la llamada en load_all()
 """
 
-from .txt      import load as load_txt
-from .pdf      import load as load_pdf
-from .csv      import load as load_csv
-from .json     import load as load_json
+from .csv import load as load_csv
+from .docx import load as load_docx
+from .json import load as load_json
 from .markdown import load as load_markdown
-from .docx     import load as load_docx
+from .pdf import load as load_pdf
+from .txt import load as load_txt
 
 
 def load_all() -> list:

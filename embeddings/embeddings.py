@@ -8,10 +8,8 @@ No depende de config.py ni de Ollama: los modelos se descargan
 automáticamente de Hugging Face y se ejecutan 100% en local.
 """
 
-from transformers import AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
-import torch
-
+from transformers import AutoModel, AutoTokenizer
 
 # ============================================================
 # PARTE 1

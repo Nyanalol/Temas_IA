@@ -3,7 +3,8 @@ connectors/txt.py — Carga ficheros .txt y los parte en chunks.
 """
 
 from langchain_core.documents import Document
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 
 def load() -> list:

@@ -5,8 +5,8 @@ Entry point for the incident analysis chain.
 import logging
 import subprocess
 import time
-import urllib.request
 import urllib.error
+import urllib.request
 
 from agents.chain_factory import build_incident_chain
 

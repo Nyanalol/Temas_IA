@@ -6,7 +6,8 @@ manteniendo los metadatos de página y origen que añade LangChain.
 """
 
 from langchain_community.document_loaders import PyPDFLoader
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 
 def load() -> list:

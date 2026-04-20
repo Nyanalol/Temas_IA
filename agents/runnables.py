@@ -1,7 +1,9 @@
 import json
 import logging
 import re
+
 from langchain_core.runnables import RunnableLambda
+
 from .models import IncidentExtraction
 
 logger = logging.getLogger(__name__)

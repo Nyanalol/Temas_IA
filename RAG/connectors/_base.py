@@ -6,6 +6,7 @@ evitando repetir los mismos parámetros en cada conector.
 """
 
 from pathlib import Path
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # Tamaño máximo de cada chunk (en caracteres).

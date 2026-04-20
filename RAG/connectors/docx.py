@@ -6,7 +6,8 @@ Requiere el paquete 'docx2txt' (incluido en pyproject.toml).
 """
 
 from langchain_community.document_loaders import Docx2txtLoader
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 
 def load() -> list:

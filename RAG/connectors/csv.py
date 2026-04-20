@@ -6,7 +6,8 @@ El contenido de cada Document es "columna: valor" por línea.
 """
 
 from langchain_community.document_loaders import CSVLoader
-from ._base import inputs_dir, get_splitter
+
+from ._base import get_splitter, inputs_dir
 
 
 def load() -> list:
