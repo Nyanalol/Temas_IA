@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: temas-ia-events
+    runtime: python
+    buildCommand: pip install uv && uv sync
+    startCommand: uv run uvicorn events.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+      # ── LLM ──────────────────────────────────────────────────────────────
+      - key: LLM_PROVIDER
+        value: openai
+      - key: LLM_MODEL
+        value: gpt-4o-mini
+      - key: LLM_TEMPERATURE
+        value: "0"
+      # ── Embeddings (no usados en el API, pero config.py los espera) ──────
+      - key: EMBEDDING_PROVIDER
+        value: openai
+      - key: EMBEDDING_MODEL
+        value: text-embedding-3-small
+      # ── Secretos: rellena en el dashboard de Render, NO aquí ─────────────
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: API_KEY
+        sync: false
+      - key: ICLOUD_EMAIL
+        sync: false
+      - key: ICLOUD_APP_PASSWORD
+        sync: false
+      - key: ICLOUD_DEFAULT_CALENDAR
+        sync: false
