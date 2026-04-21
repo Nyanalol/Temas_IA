@@ -24,7 +24,8 @@ dependencies = [
     "langchain-text-splitters>=0.3.0",
     # ── Loaders ───────────────────────────────────────────────────────────────
     "pypdf>=6.10.0",         # PDF
-    "docx2txt>=0.9",         # DOCX (Word)
+    "docx2txt>=0.9",         # DOCX (Word) — lectura
+    "python-docx>=1.1.0",   # DOCX (Word) — escritura / generación de CVs
     # JSON y CSV no necesitan deps extra: vienen con langchain-community.
     # Markdown tampoco: MarkdownHeaderTextSplitter es parte de langchain-text-splitters.
     # ── Config ────────────────────────────────────────────────────────────────
@@ -62,4 +63,4 @@ select = ["E", "F", "W", "I"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["config", "agents", "events", "rag", "embeddings"]
+known-first-party = ["config", "agents", "events", "rag", "embeddings", "work"]
