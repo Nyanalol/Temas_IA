@@ -3720,7 +3720,7 @@ wheels = [
 [[package]]
 name = "temas-ia"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "caldav" },
     { name = "chromadb" },
