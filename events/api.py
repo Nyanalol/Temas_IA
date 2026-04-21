@@ -30,13 +30,13 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Security, status
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 
-logger = logging.getLogger(__name__)
-
 from events.chain_factory import build_event_chain
 from events.icloud import create_event
 from events.runnables import build_event_dict
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 # ── API Key ────────────────────────────────────────────────────────────────────
 
