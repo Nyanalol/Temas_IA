@@ -24,9 +24,11 @@ Respuesta (201):
 import logging
 import os
 import secrets
+from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, Security, status
+from fastapi.responses import FileResponse
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 
@@ -89,6 +91,15 @@ class EventResponse(BaseModel):
 
 
 # ── Endpoints ──────────────────────────────────────────────────────────────────
+
+
+_STATIC_DIR = Path(__file__).parent / "static"
+
+
+@app.get("/", include_in_schema=False)
+def index():
+    """Sirve la mini web app — no requiere autenticación (la API key se pide en la web)."""
+    return FileResponse(_STATIC_DIR / "index.html")
 
 
 @app.get("/health", status_code=status.HTTP_200_OK)

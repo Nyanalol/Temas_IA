@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calendario">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>Calendario IA</title>
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230a84ff'/%3E%3Ctext x='90' y='130' font-size='110' text-anchor='middle' fill='white'%3E📅%3C/text%3E%3C/svg%3E">
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+      background: #0a0a0a; color: #f5f5f7;
+      min-height: 100vh;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .container { max-width: 600px; margin: 0 auto; padding: 24px 20px 40px; }
+    h1 { font-size: 28px; font-weight: 700; margin: 0 0 24px; letter-spacing: -0.5px; }
+    .subtitle { color: #8e8e93; font-size: 15px; margin: -16px 0 24px; }
+
+    .card {
+      background: #1c1c1e;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    label { display: block; font-size: 13px; font-weight: 600; color: #8e8e93; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      background: #2c2c2e;
+      border: none;
+      color: #f5f5f7;
+      font-size: 17px;
+      font-family: inherit;
+      padding: 14px;
+      border-radius: 10px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+    textarea:focus { outline: 2px solid #0a84ff; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      background: #2c2c2e;
+      border: none;
+      color: #f5f5f7;
+      font-size: 16px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+    }
+    input:focus { outline: 2px solid #0a84ff; }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    button:active { transform: scale(0.98); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: #0a84ff; color: white; }
+    .btn-success { background: #30d158; color: white; }
+    .btn-secondary { background: #3a3a3c; color: #f5f5f7; }
+    .btn-danger { background: #ff453a; color: white; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .btn-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+    .preview-row {
+      display: flex;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid #2c2c2e;
+    }
+    .preview-row:last-child { border-bottom: none; }
+    .preview-icon { font-size: 18px; width: 28px; flex-shrink: 0; }
+    .preview-label { color: #8e8e93; font-size: 13px; width: 90px; flex-shrink: 0; padding-top: 2px; }
+    .preview-value { flex: 1; font-size: 15px; word-break: break-word; }
+
+    .hidden { display: none !important; }
+
+    .status {
+      padding: 14px 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .status.error { background: #3a1f1f; color: #ff6961; }
+    .status.success { background: #1f3a1f; color: #30d158; }
+    .status.info { background: #1f2a3a; color: #64b5f6; }
+
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: -3px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .settings-link {
+      display: block;
+      text-align: center;
+      color: #8e8e93;
+      font-size: 13px;
+      text-decoration: none;
+      margin-top: 24px;
+      padding: 8px;
+    }
+    .settings-link:active { color: #0a84ff; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .modal {
+      background: #1c1c1e;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .modal h2 { margin: 0 0 16px; font-size: 20px; }
+    .modal .field { margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📅 Calendario IA</h1>
+    <p class="subtitle">Crea eventos en iCloud con lenguaje natural</p>
+
+    <!-- VISTA 1: Input -->
+    <div id="view-input">
+      <div class="card">
+        <label for="message">Describe tu evento</label>
+        <textarea id="message" placeholder="Ej: Cita con el médico el viernes a las 10, 30 min, recuérdamelo 15 min antes"></textarea>
+      </div>
+      <button id="btn-preview" class="btn-primary">Previsualizar</button>
+    </div>
+
+    <!-- VISTA 2: Cargando -->
+    <div id="view-loading" class="hidden">
+      <div class="status info"><span class="spinner"></span><span id="loading-text">Procesando...</span></div>
+    </div>
+
+    <!-- VISTA 3: Preview -->
+    <div id="view-preview" class="hidden">
+      <div class="card">
+        <label>Evento extraído</label>
+        <div id="preview-content"></div>
+      </div>
+      <div class="btn-row three">
+        <button id="btn-cancel" class="btn-secondary">Cancelar</button>
+        <button id="btn-edit" class="btn-secondary">Editar</button>
+        <button id="btn-create" class="btn-success">Crear</button>
+      </div>
+    </div>
+
+    <!-- VISTA 4: Resultado -->
+    <div id="view-result" class="hidden">
+      <div id="result-status" class="status"></div>
+      <button id="btn-new" class="btn-primary">Nuevo evento</button>
+    </div>
+
+    <a href="#" id="link-settings" class="settings-link">⚙️ Configuración</a>
+  </div>
+
+  <!-- MODAL: Settings -->
+  <div id="modal-settings" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2>Configuración</h2>
+      <div class="field">
+        <label for="cfg-apikey">API Key</label>
+        <input type="password" id="cfg-apikey" autocomplete="off" placeholder="Tu API key">
+      </div>
+      <div class="btn-row">
+        <button id="btn-cfg-cancel" class="btn-secondary">Cancelar</button>
+        <button id="btn-cfg-save" class="btn-primary">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'calendar_ai_apikey';
+
+    const $ = (id) => document.getElementById(id);
+    const views = ['input', 'loading', 'preview', 'result'];
+    const showView = (name) => {
+      views.forEach(v => $('view-' + v).classList.toggle('hidden', v !== name));
+    };
+
+    let lastMessage = '';
+    let lastPreview = null;
+
+    const getApiKey = () => localStorage.getItem(STORAGE_KEY) || '';
+    const setApiKey = (k) => localStorage.setItem(STORAGE_KEY, k);
+
+    // ── Settings modal ─────────────────────────────────────────────────
+    $('link-settings').addEventListener('click', (e) => {
+      e.preventDefault();
+      $('cfg-apikey').value = getApiKey();
+      $('modal-settings').classList.remove('hidden');
+    });
+    $('btn-cfg-cancel').addEventListener('click', () => {
+      $('modal-settings').classList.add('hidden');
+    });
+    $('btn-cfg-save').addEventListener('click', () => {
+      setApiKey($('cfg-apikey').value.trim());
+      $('modal-settings').classList.add('hidden');
+    });
+
+    // ── Wake up server on load ─────────────────────────────────────────
+    fetch('/ping', { method: 'POST' }).catch(() => {});
+
+    // ── Helpers ────────────────────────────────────────────────────────
+    const formatDate = (iso) => {
+      if (!iso) return '—';
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString('es-ES', {
+          weekday: 'long', day: 'numeric', month: 'long',
+          hour: '2-digit', minute: '2-digit'
+        });
+      } catch { return iso; }
+    };
+
+    const renderPreview = (event) => {
+      const rows = [
+        ['📌', 'Título',     event.title || '—'],
+        ['🕐', 'Inicio',     formatDate(event.start)],
+        ['🕐', 'Fin',        formatDate(event.end)],
+        ['📍', 'Lugar',      event.location || '—'],
+        ['📝', 'Notas',      event.notes || '—'],
+        ['🗂️', 'Calendario', event.calendar || '—'],
+      ];
+      if (event.alarms && event.alarms.length) {
+        rows.push(['⏰', 'Alarmas', event.alarms.map(a => a.minutes_before + ' min').join(', ')]);
+      }
+      if (event.all_day) {
+        rows.push(['📅', 'Todo el día', 'Sí']);
+      }
+      $('preview-content').innerHTML = rows
+        .filter(r => r[2] !== '—' || ['Título', 'Inicio', 'Fin'].includes(r[1]))
+        .map(([icon, label, value]) =>
+          `<div class="preview-row">
+            <span class="preview-icon">${icon}</span>
+            <span class="preview-label">${label}</span>
+            <span class="preview-value">${value}</span>
+          </div>`
+        ).join('');
+    };
+
+    const showError = (msg) => {
+      $('result-status').className = 'status error';
+      $('result-status').textContent = '❌ ' + msg;
+      showView('result');
+    };
+
+    const showSuccess = (msg) => {
+      $('result-status').className = 'status success';
+      $('result-status').textContent = '✅ ' + msg;
+      showView('result');
+    };
+
+    const callApi = async (path, message) => {
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        throw new Error('Configura tu API key en ⚙️ Configuración');
+      }
+      const resp = await fetch(path, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify({ message }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok) {
+        throw new Error(data.detail || `HTTP ${resp.status}`);
+      }
+      return data;
+    };
+
+    // ── Botones ────────────────────────────────────────────────────────
+    $('btn-preview').addEventListener('click', async () => {
+      const msg = $('message').value.trim();
+      if (!msg) return;
+      lastMessage = msg;
+      $('loading-text').textContent = 'Procesando con IA...';
+      showView('loading');
+      try {
+        const data = await callApi('/event?dry_run=true', msg);
+        lastPreview = data.event;
+        renderPreview(data.event);
+        showView('preview');
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    $('btn-cancel').addEventListener('click', () => {
+      showView('input');
+    });
+
+    $('btn-edit').addEventListener('click', () => {
+      $('message').value = lastMessage;
+      showView('input');
+      $('message').focus();
+    });
+
+    $('btn-create').addEventListener('click', async () => {
+      $('loading-text').textContent = 'Creando en iCloud...';
+      showView('loading');
+      try {
+        const data = await callApi('/event', lastMessage);
+        showSuccess('Evento "' + (data.event.title || '') + '" creado');
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    $('btn-new').addEventListener('click', () => {
+      $('message').value = '';
+      lastMessage = '';
+      lastPreview = null;
+      showView('input');
+    });
+  </script>
+</body>
+</html>
