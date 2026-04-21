@@ -14,7 +14,9 @@ __pycache__/
 rag/chroma_db/
 work/chroma_db/
 
-# Outputs generados por el asistente de trabajo
+# Inputs y outputs del asistente de trabajo (datos personales / archivos generados)
+work/inputs/
+!work/inputs/**/.gitkeep
 work/outputs/
 !work/outputs/.gitkeep
 
