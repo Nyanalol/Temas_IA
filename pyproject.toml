@@ -51,7 +51,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agents*", "rag*", "embeddings*", "events*"]
+exclude = ["tests*", "_wip*"]
 
 [tool.ruff]
 line-length = 100

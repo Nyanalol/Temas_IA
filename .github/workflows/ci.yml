@@ -36,6 +36,7 @@ jobs:
 
       - name: Check imports
         env:
+          PYTHONPATH: ${{ github.workspace }}
           # Variables de entorno mínimas para que config.py no falle
           LLM_PROVIDER: ollama
           LLM_MODEL: llama3
