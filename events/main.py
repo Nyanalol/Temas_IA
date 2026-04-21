@@ -12,13 +12,18 @@ Ejemplos:
 """
 
 import logging
+import os
 import subprocess
 import time
 import urllib.request
 
+from dotenv import load_dotenv
+
 from events.chain_factory import build_event_chain
 from events.icloud import create_event
 from events.runnables import build_event_dict
+
+load_dotenv()
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -82,7 +87,8 @@ def _show_event_summary(extracted) -> None:
 
 
 def main() -> None:
-    _ensure_ollama_running()
+    if os.getenv("LLM_PROVIDER", "ollama").lower() == "ollama":
+        _ensure_ollama_running()
     chain = build_event_chain()
 
     print("=" * 60)
