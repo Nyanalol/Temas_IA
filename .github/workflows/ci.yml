@@ -51,12 +51,16 @@ jobs:
           ICLOUD_DEFAULT_CALENDAR: Calendario
           API_KEY: ci-fake-key
         run: |
-          .venv/bin/python -c "import agents; print('agents OK')"
-          .venv/bin/python -c "import events; print('events OK')"
-          .venv/bin/python -c "import rag; print('rag OK')"
-          .venv/bin/python -c "from agents.models import IncidentExtraction, IncidentResponse; print('models OK')"
-          .venv/bin/python -c "from events.models import EventExtraction, AlarmInput; print('event models OK')"
-          .venv/bin/python -c "from events.api import app; print('events API OK')"
+          .venv/bin/python - << 'EOF'
+          import sys, os
+          sys.path.insert(0, os.getcwd())
+          import agents; print('agents OK')
+          import events; print('events OK')
+          import rag; print('rag OK')
+          from agents.models import IncidentExtraction, IncidentResponse; print('models OK')
+          from events.models import EventExtraction, AlarmInput; print('event models OK')
+          from events.api import app; print('events API OK')
+          EOF
 
   test:
     name: Tests
