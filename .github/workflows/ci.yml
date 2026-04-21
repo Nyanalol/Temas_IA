@@ -48,12 +48,12 @@ jobs:
           ICLOUD_DEFAULT_CALENDAR: Calendario
           API_KEY: ci-fake-key
         run: |
-          uv run python -c "import agents; print('agents OK')"
-          uv run python -c "import events; print('events OK')"
-          uv run python -c "import rag; print('rag OK')"
-          uv run python -c "from agents.models import IncidentExtraction, IncidentResponse; print('models OK')"
-          uv run python -c "from events.models import EventExtraction, AlarmInput; print('event models OK')"
-          uv run python -c "from events.api import app; print('events API OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); import agents; print('agents OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); import events; print('events OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); import rag; print('rag OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); from agents.models import IncidentExtraction, IncidentResponse; print('models OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); from events.models import EventExtraction, AlarmInput; print('event models OK')"
+          uv run python -c "import sys, os; sys.path.insert(0, os.getcwd()); from events.api import app; print('events API OK')"
 
   test:
     name: Tests
