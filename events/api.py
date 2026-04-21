@@ -21,13 +21,16 @@ Respuesta (201):
     }
 """
 
+import logging
 import os
 import secrets
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, HTTPException, Security, status
+from fastapi import Depends, FastAPI, HTTPException, Query, Security, status
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
+
+logger = logging.getLogger(__name__)
 
 from events.chain_factory import build_event_chain
 from events.icloud import create_event
@@ -57,6 +60,9 @@ def _require_api_key(key: str = Security(_api_key_header)) -> str:
 
 
 # ── App ────────────────────────────────────────────────────────────────────────
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s")
+logger.setLevel(logging.INFO)
 
 app = FastAPI(title="Calendar Event API", version="1.0.0", docs_url=None, redoc_url=None)
 
@@ -91,9 +97,16 @@ def health():
     return {"status": "ok"}
 
 
+@app.post("/ping", status_code=status.HTTP_200_OK)
+def ping():
+    """Warm-up endpoint — despierta el servidor sin crear eventos ni requerir auth."""
+    return {"status": "ok"}
+
+
 @app.post("/event", response_model=EventResponse, status_code=status.HTTP_201_CREATED)
 def create_calendar_event(
     body: EventRequest,
+    dry_run: bool = Query(False, description="Si es true, extrae el evento pero NO lo crea en el calendario."),
     _: str = Depends(_require_api_key),
 ):
     """
@@ -110,12 +123,43 @@ def create_calendar_event(
 
     try:
         event_dict = build_event_dict(extracted)
-        create_event(event_dict)
     except Exception as exc:
         raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=f"Error al crear el evento en iCloud: {exc}",
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Error al construir el evento: {exc}",
         ) from exc
+
+    # ── Preview en consola (siempre visible en los logs del servidor) ──────────
+    logger.info(
+        "[PREVIEW] Evento a crear:\n"
+        "  Título      : %s\n"
+        "  Inicio      : %s\n"
+        "  Fin         : %s\n"
+        "  Lugar       : %s\n"
+        "  Notas       : %s\n"
+        "  Todo el día : %s\n"
+        "  Recordat.   : %s\n"
+        "  Calendario  : %s\n"
+        "  dry_run     : %s",
+        event_dict.get("title"),
+        event_dict.get("start"),
+        event_dict.get("end"),
+        event_dict.get("location") or "-",
+        event_dict.get("notes") or "-",
+        event_dict.get("all_day", False),
+        ", ".join(f"{a['trigger_minutes_before']} min" for a in event_dict.get("alarms", [])) or "-",
+        event_dict.get("calendar_name") or "-",
+        dry_run,
+    )
+
+    if not dry_run:
+        try:
+            create_event(event_dict)
+        except Exception as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Error al crear el evento en iCloud: {exc}",
+            ) from exc
 
     # Serializar a tipos JSON-safe (datetime → str)
     summary = {

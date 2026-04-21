@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -11,6 +12,7 @@ from .models import EventExtraction
 logger = logging.getLogger(__name__)
 
 MADRID = ZoneInfo("Europe/Madrid")
+_DEFAULT_CALENDAR = os.getenv("ICLOUD_DEFAULT_CALENDAR", "Cari y Cosi")
 
 
 def debug_step(name: str) -> RunnableLambda:
@@ -71,7 +73,7 @@ def build_event_dict(extracted: EventExtraction) -> dict:
         "status": extracted.status or "CONFIRMED",
         "transparency": extracted.transparency or "OPAQUE",
         "alarms": [],
-        "calendar_name": extracted.calendar_name,
+        "calendar_name": extracted.calendar_name or _DEFAULT_CALENDAR,
     }
 
     if extracted.repeat_until:

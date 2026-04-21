@@ -1,6 +1,9 @@
+import os
 from datetime import date
 
 from langchain_core.prompts import ChatPromptTemplate
+
+_DEFAULT_CALENDAR = os.getenv("ICLOUD_DEFAULT_CALENDAR", "Cari y Cosi")
 
 
 def get_extract_prompt(format_instructions: str) -> ChatPromptTemplate:
@@ -22,6 +25,7 @@ def get_extract_prompt(format_instructions: str) -> ChatPromptTemplate:
                     "- If the user mentions reminders or recordatorios, extract them as alarms.\n"
                     "- For recurring events, map the user's description to DAILY, WEEKLY, MONTHLY or YEARLY.\n"
                     "- Only set all_day to true if the user explicitly says it is an all-day event.\n"
+                    f"- The default calendar is '{_DEFAULT_CALENDAR}'. Use it in calendar_name unless the user explicitly names a different one.\n"
                     "- Leave optional fields as null if the user did not mention them."
                 ),
             ),

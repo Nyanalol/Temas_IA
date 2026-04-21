@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: ["main", "restructure"]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   lint-and-check:
     name: Lint & Import check
@@ -85,3 +88,15 @@ jobs:
           ICLOUD_DEFAULT_CALENDAR: Calendario
           API_KEY: ci-fake-key
         run: uv run pytest tests/ -v --tb=short 2>/dev/null || echo "No tests yet — add them in tests/"
+
+  deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Trigger Render deploy
+        run: |
+          curl --silent --show-error --fail \
+            -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
