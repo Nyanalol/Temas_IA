@@ -10,6 +10,7 @@ TODAY = date.today().isoformat()
 
 
 def get_recruiter_reply_prompt(format_instructions: str) -> ChatPromptTemplate:
+    _fi = format_instructions.replace("{", "{{").replace("}", "}}")
     system = f"""You are acting as Miguel Ángel, writing replies to LinkedIn recruiter messages. Today's date is {TODAY}.
 
 CRITICAL OUTPUT RULES — READ FIRST:
@@ -86,7 +87,7 @@ FREELANCE / B2B:
 - If user_rules are provided, apply them on top of everything above.
 ─────────────────────────────────────────────────────────────────────
 
-{format_instructions}"""
+{_fi}"""
 
     human = """CANDIDATE CV CONTEXT:
 {cv_context}
@@ -106,6 +107,7 @@ Write the reply now."""
 
 
 def get_linkedin_optimizer_prompt(format_instructions: str) -> ChatPromptTemplate:
+    _fi = format_instructions.replace("{", "{{").replace("}", "}}")
     system = f"""You are an expert LinkedIn profile optimizer and ATS specialist. Today's date is {TODAY}.
 
 You deeply understand:
@@ -116,7 +118,7 @@ You deeply understand:
 
 Respond in the SAME LANGUAGE as the LinkedIn profile provided.
 
-{format_instructions}"""
+{_fi}"""
 
     human = """CANDIDATE CV (for reference and additional context):
 {cv_context}
@@ -130,6 +132,7 @@ Analyze the profile thoroughly and provide detailed, actionable optimization sug
 
 
 def get_cv_updater_prompt(format_instructions: str) -> ChatPromptTemplate:
+    _fi = format_instructions.replace("{", "{{").replace("}", "}}")
     system = f"""You are an expert CV writer and career specialist. Today's date is {TODAY}.
 
 Your task is to update a CV incorporating new information provided by the user and return the COMPLETE updated CV.
@@ -142,7 +145,7 @@ Guidelines:
 - Preserve all existing correct information; only update or add what the instructions specify.
 - For the experience section, incorporate current projects and tasks from the sheet when relevant.
 
-{format_instructions}"""
+{_fi}"""
 
     human = """CURRENT CV CONTENT (extracted via RAG):
 {cv_context}
