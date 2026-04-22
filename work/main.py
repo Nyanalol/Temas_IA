@@ -7,18 +7,23 @@ Ejecución (desde la raíz del proyecto):
 Coloca tus CVs en work/inputs/cv/ antes de usar cualquier skill.
 """
 
+import sys
 from pathlib import Path
 
-from .chain_factory import (
+# Permite ejecutar directamente (botón play) o como módulo (python -m work.main)
+if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from work.chain_factory import (
     build_cv_qa_chain,
     build_cv_updater_chain,
     build_linkedin_optimizer_chain,
     build_recruiter_reply_chain,
     invalidate_cv_cache,
 )
-from .cv_indexer import build_cv_vectorstore
-from .cv_writer import write_cv_docx
-from .sheets_loader import load_sheet_as_text
+from work.cv_indexer import build_cv_vectorstore
+from work.cv_writer import write_cv_docx
+from work.sheets_loader import load_sheet_as_text
 
 OUTPUTS_PATH = Path(__file__).resolve().parent / "outputs"
 OUTPUTS_PATH.mkdir(exist_ok=True)
