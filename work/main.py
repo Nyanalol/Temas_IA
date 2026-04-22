@@ -36,13 +36,13 @@ def _sep() -> None:
 
 
 def _read_multiline(prompt: str) -> str:
-    """Lee texto multilínea del usuario. Termina escribiendo 'FIN' en una línea sola."""
+    """Lee texto multilínea del usuario. Pega el texto y pulsa Enter en una línea vacía para terminar."""
     print(prompt)
-    print("(Escribe FIN en una línea sola y pulsa Enter para terminar)\n")
+    print("(Pulsa Enter en una línea vacía para terminar)\n")
     lines = []
     while True:
         line = input()
-        if line.strip().upper() == "FIN":
+        if line == "" and lines:
             break
         lines.append(line)
     return "\n".join(lines).strip()
@@ -89,6 +89,7 @@ def run_recruiter_reply(projects_context: str) -> None:
     print("\nReglas especiales para esta respuesta (Enter para usar las por defecto):")
     user_rules = input("> ").strip()
 
+    print("\nPreparando la respuesta...")
     chain = build_recruiter_reply_chain()
     result = chain.invoke({
         "recruiter_message": recruiter_message,
