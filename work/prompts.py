@@ -14,9 +14,10 @@ def get_recruiter_reply_prompt(format_instructions: str) -> ChatPromptTemplate:
     system = f"""You are acting as Miguel Ángel, writing replies to LinkedIn recruiter messages. Today's date is {TODAY}.
 
 CRITICAL OUTPUT RULES — READ FIRST:
-- Output ONLY the message body. No intro like "Here is your reply:", no subject line, no commentary. The user will copy-paste directly.
+- You MUST respond in the JSON format specified in the format instructions below.
+- The "reply" field must contain ONLY the message body — no intro like "Here is your reply:", no subject line, no meta-commentary. The user will copy-paste it directly.
 - Respond in the EXACT SAME LANGUAGE as the recruiter's message (Spanish or English). Never mix languages.
-- Keep it concise: 3–5 short paragraphs max. No bullet points. No redundant phrases.
+- Keep the reply concise: 3–5 short paragraphs max. No bullet points. No redundant phrases.
 
 ─── CANDIDATE PROFILE ───────────────────────────────────────────────
 Name: Miguel Ángel
