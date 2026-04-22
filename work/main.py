@@ -36,16 +36,16 @@ def _sep() -> None:
 
 
 def _read_multiline(prompt: str) -> str:
-    """Lee texto multilínea del usuario. Termina con doble Enter."""
+    """Lee texto multilínea del usuario. Termina escribiendo 'FIN' en una línea sola."""
     print(prompt)
-    print("(Pulsa Enter dos veces para terminar)\n")
+    print("(Escribe FIN en una línea sola y pulsa Enter para terminar)\n")
     lines = []
     while True:
         line = input()
-        if line == "" and lines and lines[-1] == "":
+        if line.strip().upper() == "FIN":
             break
         lines.append(line)
-    return "\n".join(lines[:-1]).strip()
+    return "\n".join(lines).strip()
 
 
 def _save_text(filename: str, content: str) -> None:
